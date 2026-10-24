@@ -1,0 +1,61 @@
+# Kubernetes Pod Security Standards (Restricted Profile)
+# Hardens container execution according to HIPAA & CIS Benchmarks
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-hardened-app
+  namespace: healthcare
+  labels:
+    app: healthcare-app
+    security-profile: hardened
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: healthcare-app
+      security-profile: hardened
+  template:
+    metadata:
+      labels:
+        app: healthcare-app
+        security-profile: hardened
+    spec:
+      serviceAccountName: healthcare-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: healthcare-app
+          image: healthcare-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5

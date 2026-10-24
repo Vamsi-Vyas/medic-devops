@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseCare | Doctor Consultation & Appointment Booking</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- DevOps Environment Indicator Top Bar -->
+  <div class="devops-bar">
+    <div class="devops-indicators">
+      <span id="deployment-pill" class="devops-pill pill-blue">
+        <span class="pill-dot"></span> Pod Active: BLUE (v1.0.0)
+      </span>
+      <span><i class="fa-solid fa-server"></i> Platform: <span id="cluster-label">Kubernetes Cluster</span></span>
+      <span><i class="fa-solid fa-code-branch"></i> Version: <span id="version-label">v1.0.0</span></span>
+    </div>
+    <div>
+      <span class="security-badge"><i class="fa-solid fa-shield-halved"></i> DevSecOps Secured &bull; HIPAA Compliant</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand">
+        <div class="brand-icon">+</div>
+        <div class="brand-title">Pulse<span>Care</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/"><i class="fa-solid fa-house"></i> Overview</a></li>
+        <li><a href="/appointments" class="active"><i class="fa-solid fa-calendar-check"></i> Book Consultation</a></li>
+        <li><a href="/records"><i class="fa-solid fa-file-waveform"></i> EHR Health Portal</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="emergency-sos-btn" class="btn-emergency">
+          <i class="fa-solid fa-truck-medical"></i> SOS Emergency ER
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div style="margin-bottom: 24px;">
+      <h1 class="section-title">Schedule a Medical Consultation</h1>
+      <p class="section-desc">Choose from certified senior specialists, pick a preferred time slot, and receive instant confirmation.</p>
+    </div>
+
+    <div class="booking-container">
+      <!-- Booking Form -->
+      <div class="card">
+        <h3 style="margin-bottom: 20px; font-size:1.3rem;"><i class="fa-solid fa-notes-medical" style="color:var(--primary);"></i> Patient Appointment Form</h3>
+        
+        <form id="appointment-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patientName">Patient Full Name *</label>
+              <input type="text" id="patientName" class="form-control" placeholder="e.g. Eleanor Vance" required>
+            </div>
+            <div class="form-group">
+              <label for="patientEmail">Email Address *</label>
+              <input type="email" id="patientEmail" class="form-control" placeholder="patient@example.com" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patientPhone">Contact Phone Number *</label>
+              <input type="tel" id="patientPhone" class="form-control" placeholder="+1 (555) 000-0000" required>
+            </div>
+            <div class="form-group">
+              <label for="appointmentDate">Appointment Date *</label>
+              <input type="date" id="appointmentDate" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="doctor-select">Consulting Specialist *</label>
+            <select id="doctor-select" class="form-control" required>
+              <option value="">Loading specialists list...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Available Consultation Slots *</label>
+            <div class="slot-grid">
+              <div class="slot-btn" data-time="09:00 AM">09:00 AM</div>
+              <div class="slot-btn active" data-time="10:00 AM">10:00 AM</div>
+              <div class="slot-btn" data-time="11:30 AM">11:30 AM</div>
+              <div class="slot-btn" data-time="02:00 PM">02:00 PM</div>
+              <div class="slot-btn" data-time="03:30 PM">03:30 PM</div>
+              <div class="slot-btn" data-time="04:45 PM">04:45 PM</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reason">Symptoms / Medical Reason for Visit</label>
+            <textarea id="reason" class="form-control" rows="3" placeholder="Briefly describe symptoms, duration, or any prior diagnoses..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 13px;">
+            <i class="fa-solid fa-check-circle"></i> Confirm & Reserve Consultation
+          </button>
+        </form>
+      </div>
+
+      <!-- Upcoming Appointments Sidebar -->
+      <div>
+        <div class="card" style="margin-bottom: 24px;">
+          <h3 style="font-size:1.15rem; margin-bottom: 16px;">
+            <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Upcoming Appointments
+          </h3>
+          <div id="appointments-list">
+            <p style="color:#64748b; font-size:0.88rem;">Loading scheduled consultations...</p>
+          </div>
+        </div>
+
+        <div class="card" style="background:#f1f5f9; border-left: 4px solid var(--secondary);">
+          <h4 style="font-size: 1rem; margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Telehealth Guidelines</h4>
+          <p style="font-size: 0.85rem; color:var(--text-muted); line-height: 1.5;">
+            Please ensure you join the encrypted waiting room 5 minutes prior to your scheduled consultation slot. Have your identification card and existing medication list ready.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Confirmation Modal -->
+  <div id="booking-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon"><i class="fa-solid fa-check"></i></div>
+      <h3 style="font-size:1.35rem; margin-bottom: 8px;">Appointment Confirmed!</h3>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 18px;">
+        Your consultation request has been validated and committed to the hospital EHR queue.
+      </p>
+      <div id="modal-details" style="background:#f8fafc; border:1px solid var(--border); padding: 16px; border-radius: var(--radius-sm); text-align: left; font-size:0.9rem; line-height:1.7; margin-bottom: 20px;">
+      </div>
+      <button onclick="closeModal()" class="btn btn-primary" style="width:100%;">Close & Return</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>+ PulseCare Healthcare System</h4>
+        <p>Zero-downtime Blue-Green deployment architecture on Kubernetes managed via Jenkins CI/CD.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="/">Overview</a></li>
+          <li><a href="/appointments">Book Doctor</a></li>
+          <li><a href="/records">Patient EHR</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>DevOps Telemetry</h5>
+        <ul>
+          <li><a href="/healthz">Liveness Probe</a></li>
+          <li><a href="/readyz">Readiness Probe</a></li>
+          <li><a href="/api/info">Deployment Node</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2026 PulseCare Health System.</div>
+      <div class="security-badge"><i class="fa-solid fa-lock"></i> HIPAA Certified Microservice Architecture</div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/appointments.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+// ==============================================================================
+// Jenkins Pipeline for PBL-8:
+// Automated Blue-Green Deployment Strategy using Jenkins, Kubernetes, Docker
+// ==============================================================================
+
+pipeline {
+    agent any
+
+    environment {
+        NAMESPACE       = 'healthcare'
+        APP_LABEL       = 'healthcare-app'
+        PROD_SERVICE    = 'healthcare-service'
+        PREVIEW_SERVICE = 'healthcare-preview-service'
+        IMAGE_NAME      = 'healthcare-app:latest'
+    }
+
+    stages {
+        stage('Checkout Source') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo '🔨 Building Docker Image for Healthcare App...'
+                sh 'docker build -t ${IMAGE_NAME} .'
+            }
+        }
+
+        stage('Determine Current & Target Color') {
+            steps {
+                script {
+                    echo '🔍 Inspecting current Kubernetes production service...'
+                    sh '''
+                        kubectl get ns ${NAMESPACE} >/dev/null 2>&1 || kubectl create namespace ${NAMESPACE}
+                        CURRENT=$(kubectl get svc ${PROD_SERVICE} -n ${NAMESPACE} -o jsonpath='{.spec.selector.version}' 2>/dev/null || echo "none")
+                        echo "CURRENT_ACTIVE_COLOR=$CURRENT" > deploy.env
+                        if [ "$CURRENT" == "blue" ]; then
+                            echo "TARGET_COLOR=green" >> deploy.env
+                        else
+                            echo "TARGET_COLOR=blue" >> deploy.env
+                        fi
+                        cat deploy.env
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Target (Candidate) Environment') {
+            steps {
+                script {
+                    sh '''
+                        source deploy.env
+                        echo "🚀 Deploying to ${TARGET_COLOR^^} deployment..."
+                        kubectl apply -f k8s/blue-green/deployment-${TARGET_COLOR}.yaml -n ${NAMESPACE}
+                        kubectl rollout status deployment/healthcare-${TARGET_COLOR} -n ${NAMESPACE} --timeout=90s
+                    '''
+                }
+            }
+        }
+
+        stage('Route Preview Service & Automated Smoke Test') {
+            steps {
+                script {
+                    sh '''
+                        source deploy.env
+                        echo "🧪 Updating preview service to point to ${TARGET_COLOR}..."
+                        kubectl apply -f k8s/blue-green/service-preview.yaml -n ${NAMESPACE}
+                        kubectl patch svc ${PREVIEW_SERVICE} -n ${NAMESPACE} -p "{\\"spec\\":{\\"selector\\":{\\"app\\":\\"${APP_LABEL}\\",\\"version\\":\\"${TARGET_COLOR}\\"}}}"
+                        
+                        echo "Waiting 5 seconds for pods to settle..."
+                        sleep 5
+
+                        TARGET_POD=$(kubectl get pods -n ${NAMESPACE} -l app=${APP_LABEL},version=${TARGET_COLOR} -o jsonpath='{.items[0].metadata.name}')
+                        echo "Executing smoke test on candidate pod: $TARGET_POD"
+                        HEALTH=$(kubectl exec -n ${NAMESPACE} $TARGET_POD -- wget -qO- http://localhost:3000/healthz)
+                        echo "Health Response: $HEALTH"
+
+                        if [[ "$HEALTH" != *"UP"* ]]; then
+                            echo "❌ Automated smoke test FAILED!"
+                            exit 1
+                        fi
+                        echo "✅ Automated smoke test PASSED!"
+                    '''
+                }
+            }
+        }
+
+        stage('Switch Production Traffic (Zero Downtime Cutover)') {
+            steps {
+                script {
+                    sh '''
+                        source deploy.env
+                        echo "🔄 Switching Production Service selector to ${TARGET_COLOR^^}..."
+                        kubectl apply -f k8s/blue-green/service-production.yaml -n ${NAMESPACE}
+                        kubectl patch svc ${PROD_SERVICE} -n ${NAMESPACE} -p "{\\"spec\\":{\\"selector\\":{\\"app\\":\\"${APP_LABEL}\\",\\"version\\":\\"${TARGET_COLOR}\\"}}}"
+                        echo "Traffic cutover complete. Production is now on ${TARGET_COLOR^^}."
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Production Endpoints') {
+            steps {
+                sh '''
+                    echo "Current active version in Production Service:"
+                    kubectl get svc ${PROD_SERVICE} -n ${NAMESPACE} -o jsonpath='{.spec.selector.version}'
+                    echo ""
+                    echo "Pod status:"
+                    kubectl get pods -n ${NAMESPACE} -l app=${APP_LABEL}
+                '''
+            }
+        }
+    }
+}

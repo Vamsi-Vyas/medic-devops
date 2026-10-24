@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: healthcare-network-policy
+  namespace: healthcare
+  labels:
+    security.policy: hipaa-restricted
+spec:
+  podSelector:
+    matchLabels:
+      app: healthcare-app
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow inbound traffic only on HTTP application port 3000
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 3000
+  egress:
+    # Allow outbound traffic to Kubernetes DNS (UDP/TCP 53)
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow outbound HTTPS for verified external telemetry (Port 443)
+    - ports:
+        - protocol: TCP
+          port: 443

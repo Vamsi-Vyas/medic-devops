@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseCare | Smart Healthcare & Telemedicine System</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- DevOps Environment Indicator Top Bar -->
+  <div class="devops-bar">
+    <div class="devops-indicators">
+      <span id="deployment-pill" class="devops-pill pill-blue">
+        <span class="pill-dot"></span> Pod Active: BLUE (v1.0.0)
+      </span>
+      <span><i class="fa-solid fa-server"></i> Platform: <span id="cluster-label">Kubernetes Cluster</span></span>
+      <span><i class="fa-solid fa-code-branch"></i> Version: <span id="version-label">v1.0.0</span></span>
+    </div>
+    <div>
+      <span class="security-badge"><i class="fa-solid fa-shield-halved"></i> DevSecOps Secured &bull; HIPAA Compliant</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand">
+        <div class="brand-icon">+</div>
+        <div class="brand-title">Pulse<span>Care</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/" class="active"><i class="fa-solid fa-house"></i> Overview</a></li>
+        <li><a href="/appointments"><i class="fa-solid fa-calendar-check"></i> Book Consultation</a></li>
+        <li><a href="/records"><i class="fa-solid fa-file-waveform"></i> EHR Health Portal</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="emergency-sos-btn" class="btn-emergency">
+          <i class="fa-solid fa-truck-medical"></i> SOS Emergency ER
+        </button>
+        <a href="/appointments" class="btn btn-primary">Book Doctor</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div>
+        <div class="hero-badge">
+          <i class="fa-solid fa-hospital"></i> Certified Level 1 Multi-Specialty Medical Center
+        </div>
+        <h1>Next-Generation Digital Healthcare <span>Delivered Seamlessly</span></h1>
+        <p>
+          Secure, resilient, and cloud-native healthcare management platform. Connect with world-class specialists, access end-to-end encrypted medical telemetry records, and schedule instant outpatient appointments with zero downtime.
+        </p>
+        <div class="hero-buttons">
+          <a href="/appointments" class="btn btn-primary"><i class="fa-solid fa-user-doctor"></i> Schedule Appointment</a>
+          <a href="/records" class="btn btn-secondary"><i class="fa-solid fa-laptop-medical"></i> Open Patient Portal</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <h3>Emergency Medical Intake</h3>
+          <span class="devops-pill pill-green"><span class="pill-dot"></span> 24/7 Standby</span>
+        </div>
+        <p style="color:var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+          Direct communication gateway to Trauma Center & Ambulance dispatch. For critical life-threatening conditions, dispatch immediate response units.
+        </p>
+        <div style="background:#f1f5f9; padding: 18px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size: 0.88rem;">
+            <span>Emergency Helpline:</span>
+            <strong>+1 (800) 911-CARE</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size: 0.88rem;">
+            <span>Trauma Desk:</span>
+            <strong>Station 4 (North Wing)</strong>
+          </div>
+        </div>
+        <button onclick="document.getElementById('emergency-sos-btn').click()" class="btn btn-primary" style="width:100%; background:var(--danger);">
+          <i class="fa-solid fa-bell"></i> Trigger Rapid Dispatch
+        </button>
+      </div>
+    </section>
+
+    <!-- Hospital Live Telemetry Stats -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon icon-blue"><i class="fa-solid fa-bed-pulse"></i></div>
+        <div class="stat-info">
+          <h4>380+</h4>
+          <p>Available Inpatient Beds</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-green"><i class="fa-solid fa-user-doctor"></i></div>
+        <div class="stat-info">
+          <h4>64</h4>
+          <p>Active On-Duty Specialists</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-amber"><i class="fa-solid fa-stopwatch"></i></div>
+        <div class="stat-info">
+          <h4>4.2m</h4>
+          <p>Avg. ER Response Time</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-purple"><i class="fa-solid fa-shield-virus"></i></div>
+        <div class="stat-info">
+          <h4>99.99%</h4>
+          <p>Cloud High Availability</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clinical Departments -->
+    <section>
+      <h2 class="section-title">Specialized Medical Centers</h2>
+      <p class="section-desc">State-of-the-art diagnostic facilities and specialized patient recovery units.</p>
+
+      <div class="dept-grid">
+        <div class="dept-card">
+          <div class="dept-icon" style="color:#ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+          <h3>Cardiology & Heart Care</h3>
+          <p>Non-invasive cardiac imaging, angiography, pacemaker telemetry, and 24/7 catheterization laboratory.</p>
+        </div>
+        <div class="dept-card">
+          <div class="dept-icon" style="color:#8b5cf6;"><i class="fa-solid fa-brain"></i></div>
+          <h3>Neurology & Neurosurgery</h3>
+          <p>Comprehensive brain injury management, EEG, neuro-critical trauma, and stroke intervention unit.</p>
+        </div>
+        <div class="dept-card">
+          <div class="dept-icon" style="color:#06b6d4;"><i class="fa-solid fa-child"></i></div>
+          <h3>Pediatrics & Neonatal Care</h3>
+          <p>Level III NICU neonatal intensive care, pediatric wellness, vaccination schedules, and emergency infant care.</p>
+        </div>
+        <div class="dept-card">
+          <div class="dept-icon" style="color:#10b981;"><i class="fa-solid fa-bone"></i></div>
+          <h3>Orthopedics & Joint Center</h3>
+          <p>Minimally invasive arthroscopic surgeries, sports trauma therapy, and computer-navigated joint reconstruction.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Senior Physicians -->
+    <section>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+        <h2 class="section-title">Chief Consulting Physicians</h2>
+        <a href="/appointments" class="btn btn-secondary" style="font-size:0.85rem;">View Full Medical Board &rarr;</a>
+      </div>
+      <p class="section-desc">Board-certified doctors with decades of clinical excellence.</p>
+
+      <div class="doc-grid">
+        <div class="doc-card">
+          <img class="doc-img" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&auto=format&fit=crop&q=80" alt="Dr. Emily Vance">
+          <div class="doc-body">
+            <span class="doc-badge">Cardiology</span>
+            <h4>Dr. Emily Vance</h4>
+            <div class="doc-role">Chief of Cardiovascular Medicine</div>
+            <p style="font-size:0.85rem; color:var(--text-muted);">Specializes in interventional electrophysiology and cardiac failure.</p>
+            <div class="doc-meta">
+              <span><i class="fa-solid fa-award"></i> 14+ Yrs Exp.</span>
+              <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> 4.9 (180+ Reviews)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <img class="doc-img" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500&auto=format&fit=crop&q=80" alt="Dr. Robert Marcus">
+          <div class="doc-body">
+            <span class="doc-badge">Neurology</span>
+            <h4>Dr. Robert Marcus</h4>
+            <div class="doc-role">Senior Consultant Neurologist</div>
+            <p style="font-size:0.85rem; color:var(--text-muted);">Leader in neuro-oncology and microvascular neurosurgery.</p>
+            <div class="doc-meta">
+              <span><i class="fa-solid fa-award"></i> 11+ Yrs Exp.</span>
+              <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> 4.8 (142+ Reviews)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <img class="doc-img" src="https://images.unsplash.com/photo-1594824813583-16a76059d618?w=500&auto=format&fit=crop&q=80" alt="Dr. Aisha Patel">
+          <div class="doc-body">
+            <span class="doc-badge">Pediatrics</span>
+            <h4>Dr. Aisha Patel</h4>
+            <div class="doc-role">Lead Pediatric Clinician</div>
+            <p style="font-size:0.85rem; color:var(--text-muted);">Specialist in child development and pediatric infectious diseases.</p>
+            <div class="doc-meta">
+              <span><i class="fa-solid fa-award"></i> 9+ Yrs Exp.</span>
+              <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> 4.95 (210+ Reviews)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <img class="doc-img" src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500&auto=format&fit=crop&q=80" alt="Dr. David Kim">
+          <div class="doc-body">
+            <span class="doc-badge">Orthopedics</span>
+            <h4>Dr. David Kim</h4>
+            <div class="doc-role">Joint Replacement Surgeon</div>
+            <p style="font-size:0.85rem; color:var(--text-muted);">Pioneer in robotic arthroplasty and spinal alignment therapy.</p>
+            <div class="doc-meta">
+              <span><i class="fa-solid fa-award"></i> 16+ Yrs Exp.</span>
+              <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> 4.85 (160+ Reviews)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>+ PulseCare Healthcare System</h4>
+        <p>Continuous Deployment & DevSecOps enabled hospital management platform deployed across high-availability Kubernetes clusters with automated Blue-Green traffic routing.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Patient Portals</h5>
+        <ul>
+          <li><a href="/appointments">Schedule Appointment</a></li>
+          <li><a href="/records">EHR Records Portal</a></li>
+          <li><a href="/healthz">System Health Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Cloud & DevSecOps</h5>
+        <ul>
+          <li><a href="/api/info">Kubernetes Active Pod Info</a></li>
+          <li><a href="/readyz">Container Readiness Check</a></li>
+          <li><a href="#">Security Audit Log</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2026 PulseCare Health System. All clinical rights reserved.</div>
+      <div class="security-badge"><i class="fa-solid fa-lock"></i> AES-256 Encrypted &bull; HIPAA Title II Security Rule Verified</div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-blue
+  namespace: healthcare
+  labels:
+    app: healthcare-app
+    deployment: blue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: healthcare-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: healthcare-app
+        version: blue
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: healthcare-container
+          image: healthcare-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DEPLOYMENT_COLOR
+              value: "blue"
+            - name: APP_VERSION
+              value: "1.0.0"
+            - name: NODE_ENV
+              value: "production"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
