@@ -1,49 +1,69 @@
+
 # ==============================================================
-# Multi-stage Security-Hardened Dockerfile for Healthcare System
-# DevSecOps Best Practice: Runs as unprivileged non-root user (node)
+# Multi-stage Security-Hardened Dockerfile
+# Healthcare System - DevSecOps
 # ==============================================================
 
-# Build Stage
+# =========================
+# 1. BUILD STAGE
+# =========================
 FROM node:20-alpine AS builder
+
+# Update npm for dependency installation
+RUN npm install -g npm@11
 
 WORKDIR /usr/src/app
 
 # Copy dependency manifests
 COPY package*.json ./
 
-# Install dependencies (only production deps needed)
-RUN npm ci --only=production && npm cache clean --force
+# Install production dependencies
+RUN npm ci --omit=dev --no-audit --no-fund \
+    && npm cache clean --force
 
-# Runtime Stage
+# =========================
+# 2. RUNTIME STAGE
+# =========================
 FROM node:20-alpine
 
-# Security hardening: Install ca-certificates and security updates
-RUN apk update && apk upgrade && apk add --no-cache wget ca-certificates
+# Install security updates and required packages
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache wget ca-certificates
+
+# Remove npm and npx because they are not needed at runtime
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    /usr/local/bin/npm \
+    /usr/local/bin/npx \
+    /root/.npm
 
 WORKDIR /usr/src/app
 
-# Set production environment
+# Production environment
 ENV NODE_ENV=production \
     PORT=3000 \
     APP_VERSION=1.0.0 \
     DEPLOYMENT_COLOR=blue
 
-# Copy dependencies from builder stage
+# Copy production dependencies from builder
 COPY --from=builder --chown=node:node /usr/src/app/node_modules ./node_modules
+
+# Copy application manifests
 COPY --chown=node:node package*.json ./
 
-# Copy source code and test files
+# Copy application source and tests
 COPY --chown=node:node src/ ./src/
 COPY --chown=node:node test/ ./test/
 
-# Enforce DevSecOps: Switch to non-root user 'node' (UID: 1000)
+# Run as non-root user
 USER node
 
-# Healthcheck probe
+# Container health check
 HEALTHCHECK --interval=20s --timeout=5s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost:3000/healthz || exit 1
+    CMD wget --quiet --tries=1 --spider http://localhost:3000/healthz || exit 1
 
+# Expose application port
 EXPOSE 3000
 
-# Start server
+# Start application
 CMD ["node", "src/server.js"]
